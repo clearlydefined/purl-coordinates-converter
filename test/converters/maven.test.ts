@@ -32,9 +32,37 @@ describe('maven converter', () => {
       })
     })
 
+    it('converts maven purl with repo1.maven.org without trailing slash to mavencentral', async () => {
+      const p = PackageURL.fromString(
+        'pkg:maven/org.apache.httpcomponents/httpcore@4.3?repository_url=https%3A%2F%2Frepo1.maven.org%2Fmaven2'
+      )
+      const c = await toCoordinates(p)
+      assert.deepStrictEqual(c, {
+        type: 'maven',
+        provider: 'mavencentral',
+        namespace: 'org.apache.httpcomponents',
+        name: 'httpcore',
+        revision: '4.3'
+      })
+    })
+
     it('converts maven purl with repo.maven.apache.org to mavencentral', async () => {
       const p = PackageURL.fromString(
         'pkg:maven/org.apache.httpcomponents/httpcore@4.3?repository_url=https%3A%2F%2Frepo.maven.apache.org%2Fmaven2%2F'
+      )
+      const c = await toCoordinates(p)
+      assert.deepStrictEqual(c, {
+        type: 'maven',
+        provider: 'mavencentral',
+        namespace: 'org.apache.httpcomponents',
+        name: 'httpcore',
+        revision: '4.3'
+      })
+    })
+
+    it('converts maven purl with repo.maven.apache.org without trailing slash to mavencentral', async () => {
+      const p = PackageURL.fromString(
+        'pkg:maven/org.apache.httpcomponents/httpcore@4.3?repository_url=https%3A%2F%2Frepo.maven.apache.org%2Fmaven2'
       )
       const c = await toCoordinates(p)
       assert.deepStrictEqual(c, {
@@ -60,6 +88,20 @@ describe('maven converter', () => {
       })
     })
 
+    it('converts maven purl with maven.google.com trailing slash to mavengoogle', async () => {
+      const p = PackageURL.fromString(
+        'pkg:maven/android.arch.lifecycle/common@1.0.1?repository_url=https%3A%2F%2Fmaven.google.com%2F'
+      )
+      const c = await toCoordinates(p)
+      assert.deepStrictEqual(c, {
+        type: 'maven',
+        provider: 'mavengoogle',
+        namespace: 'android.arch.lifecycle',
+        name: 'common',
+        revision: '1.0.1'
+      })
+    })
+
     it('converts maven purl with plugins.gradle.org to gradleplugin', async () => {
       const p = PackageURL.fromString(
         'pkg:maven/io.github.lognet/grpc-spring-boot-starter-gradle-plugin@4.6.0?repository_url=https%3A%2F%2Fplugins.gradle.org%2Fm2%2F'
@@ -74,9 +116,30 @@ describe('maven converter', () => {
       })
     })
 
+    it('converts maven purl with plugins.gradle.org without trailing slash to gradleplugin', async () => {
+      const p = PackageURL.fromString(
+        'pkg:maven/io.github.lognet/grpc-spring-boot-starter-gradle-plugin@4.6.0?repository_url=https%3A%2F%2Fplugins.gradle.org%2Fm2'
+      )
+      const c = await toCoordinates(p)
+      assert.deepStrictEqual(c, {
+        type: 'maven',
+        provider: 'gradleplugin',
+        namespace: 'io.github.lognet',
+        name: 'grpc-spring-boot-starter-gradle-plugin',
+        revision: '4.6.0'
+      })
+    })
+
     it('throws when unsupported qualifiers are present', async () => {
       const p = PackageURL.fromString('pkg:maven/org.apache/commons@1.0?type=pom')
       await assert.rejects(toCoordinates(p), /qualifiers/i)
+    })
+
+    it('throws when repository_url is unrecognised', async () => {
+      const p = PackageURL.fromString(
+        'pkg:maven/com.example/foo@1.0?repository_url=https%3A%2F%2Fprivate.repo.example.com%2Fmaven%2F'
+      )
+      await assert.rejects(toCoordinates(p), /repository_url/i)
     })
 
     it('converts maven purl with classifier=sources to sourcearchive', async () => {
@@ -151,7 +214,7 @@ describe('maven converter', () => {
       })
       assert.strictEqual(
         purl.toString(),
-        'pkg:maven/io.github.lognet/grpc-spring-boot-starter-gradle-plugin@4.6.0?repository_url=https%3A%2F%2Fplugins.gradle.org%2Fm2%2F'
+        'pkg:maven/io.github.lognet/grpc-spring-boot-starter-gradle-plugin@4.6.0?repository_url=https%3A%2F%2Fplugins.gradle.org%2Fm2'
       )
     })
 

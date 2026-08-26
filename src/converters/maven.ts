@@ -15,16 +15,18 @@ const supportedTypeProviderPairs = [
 ]
 
 const REPO_TO_PROVIDER: Record<string, CoordinatesProvider> = {
-  'https://repo.maven.apache.org/maven2/': 'mavencentral',
-  'https://repo1.maven.org/maven2/': 'mavencentral',
+  'https://repo.maven.apache.org/maven2': 'mavencentral',
+  'https://repo1.maven.org/maven2': 'mavencentral',
   'https://maven.google.com': 'mavengoogle',
-  'https://plugins.gradle.org/m2/': 'gradleplugin'
+  'https://plugins.gradle.org/m2': 'gradleplugin'
 }
 
 const PROVIDER_TO_REPO: Record<string, string> = {
   mavengoogle: 'https://maven.google.com',
-  gradleplugin: 'https://plugins.gradle.org/m2/'
+  gradleplugin: 'https://plugins.gradle.org/m2'
 }
+
+const normaliseRepoUrl = (url: string) => url.replace(/\/$/, '')
 
 export async function toCoordinates(p: PackageURL): Promise<CoordinatesSpec> {
   const qualifierKeys = p.qualifiers ? Object.keys(p.qualifiers) : []
@@ -35,7 +37,9 @@ export async function toCoordinates(p: PackageURL): Promise<CoordinatesSpec> {
   if (classifier && classifier !== 'sources') throw new Error(`Unsupported classifier: ${classifier}`)
 
   const repoUrl = p.qualifiers && 'repository_url' in p.qualifiers ? p.qualifiers.repository_url : undefined
-  const provider: CoordinatesProvider = (repoUrl ? REPO_TO_PROVIDER[repoUrl] : undefined) ?? 'mavencentral'
+  const lookedUp = repoUrl ? REPO_TO_PROVIDER[normaliseRepoUrl(repoUrl)] : undefined
+  if (repoUrl && !lookedUp) throw new Error(`Unsupported repository_url: ${repoUrl}`)
+  const provider: CoordinatesProvider = lookedUp ?? 'mavencentral'
 
   if (!p.namespace) throw new Error(`Maven PURL requires a namespace: ${p.toString()}`)
   const type = classifier === 'sources' ? 'sourcearchive' : 'maven'
