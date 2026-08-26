@@ -1,3 +1,6 @@
+// (c) Copyright 2026, SAP SE and ClearlyDefined contributors. Licensed under the MIT license.
+// SPDX-License-Identifier: MIT
+
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { PackageURL } from 'packageurl-js'
