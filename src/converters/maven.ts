@@ -39,6 +39,7 @@ export async function toCoordinates(p: PackageURL): Promise<CoordinatesSpec> {
   const repoUrl = p.qualifiers && 'repository_url' in p.qualifiers ? p.qualifiers.repository_url : undefined
   const lookedUp = repoUrl ? REPO_TO_PROVIDER[normaliseRepoUrl(repoUrl)] : undefined
   if (repoUrl && !lookedUp) throw new Error(`Unsupported repository_url: ${repoUrl}`)
+  // the default repository Maven PURLs is https://repo1.maven.org/maven2 aka. mavencentral here
   const provider: CoordinatesProvider = lookedUp ?? 'mavencentral'
 
   if (!p.namespace) throw new Error(`Maven PURL requires a namespace: ${p.toString()}`)
