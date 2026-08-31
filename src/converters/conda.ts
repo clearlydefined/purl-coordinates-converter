@@ -44,7 +44,8 @@ export async function toCoordinates(p: PackageURL): Promise<CoordinatesSpec> {
 }
 
 export function toPurl(c: CoordinatesSpec): PackageURL {
-  const channel = PROVIDER_TO_CHANNEL[c.provider]
+  const channel = PROVIDER_TO_CHANNEL[c.provider as string]
+  if (!channel) throw new Error(`Unsupported provider for conda toPurl: ${c.provider}`)
   const qualifiers: Record<string, string> = { channel, subdir: c.namespace }
 
   if (c.revision) {
