@@ -53,7 +53,7 @@ export function toPurl(c: CoordinatesSpec): PackageURL {
     if (dashIndex !== -1) {
       const version = c.revision.slice(0, dashIndex)
       const build = c.revision.slice(dashIndex + 1)
-      qualifiers.build = build
+      if (build) qualifiers.build = build
       return new PackageURL('conda', null, c.name, version, qualifiers, null)
     }
     return new PackageURL('conda', null, c.name, c.revision, qualifiers, null)
