@@ -36,7 +36,12 @@ const cases = [
   'pkg:deb/debian/curl@7.50.3-1?arch=amd64',
   'pkg:deb/debian/curl@7.50.3-1',
   'pkg:deb/debian/attr@1:2.4.47-2?arch=source',
-  'pkg:deb/debian/base-files@12.4+deb12u10?arch=amd64'
+  'pkg:deb/debian/base-files@12.4+deb12u10?arch=amd64',
+  // conda
+  'pkg:conda/absl-py@0.4.1?build=py36h06a4308_0&channel=main&subdir=linux-64',
+  'pkg:conda/numpy@1.16.6?build=py36hdc1b780_0&channel=conda-forge&subdir=linux-aarch64',
+  'pkg:conda/six@1.16.0?build=pyhd3eb1b0_0&channel=main&subdir=noarch',
+  'pkg:conda/r-base@4.3.1?build=h2b0e59c_6&channel=r&subdir=linux-64'
 ]
 
 describe('PURL ↔ Coordinates roundtrip', () => {

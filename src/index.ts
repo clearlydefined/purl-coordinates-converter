@@ -13,6 +13,7 @@ import { converter as maven } from './converters/maven.ts'
 import { converter as npm } from './converters/npm.ts'
 import { converter as nuget } from './converters/nuget.ts'
 import { converter as pypi } from './converters/pypi.ts'
+import { converter as conda } from './converters/conda.ts'
 import type { ConverterModule, CoordinatesSpec } from './types.ts'
 
 export type { CoordinatesSpec } from './types.ts'
@@ -28,7 +29,8 @@ const allConverters: ConverterModule[] = [
   github,
   maven,
   golang,
-  debian
+  debian,
+  conda
 ]
 
 export function buildMap<V>(entries: [string, V][]): Record<string, V> {
